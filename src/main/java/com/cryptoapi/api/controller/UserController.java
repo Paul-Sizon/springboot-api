@@ -3,6 +3,7 @@ package com.cryptoapi.api.controller;
 import com.cryptoapi.api.model.User;
 import com.cryptoapi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -18,7 +19,7 @@ public class UserController {
     }
 
     @PostMapping("/")
-    public int addUser(@RequestBody User user) {
+    public int addUser(@NonNull @RequestBody User user) {
         return userService.addUser(user);
     }
 
@@ -33,7 +34,7 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    public int updateUser(@PathVariable("id") UUID id, @RequestBody User user) {
+    public int updateUser(@PathVariable("id") UUID id, @NonNull @RequestBody User user) {
         return userService.updateUser(id, user);
     }
 }

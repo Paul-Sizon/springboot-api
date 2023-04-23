@@ -14,6 +14,14 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+	//starer jbdc
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	//jdbc
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	//postgres runtime
+	implementation 'org.postgresql:postgresql'
+	//flyway
+	implementation 'org.flywaydb:flyway-core'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

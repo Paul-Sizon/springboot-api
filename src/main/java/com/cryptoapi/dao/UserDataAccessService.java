@@ -1,6 +1,7 @@
 package com.cryptoapi.dao;
 
 import com.cryptoapi.api.model.User;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -8,9 +9,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Repository("mockDao")
-public class MockUserDataAccessService implements UserDao {
+@Repository("postgres")
+public class UserDataAccessService implements UserDao {
     private static List<User> DB = new ArrayList<>();
+    private final JdbcTemplate jdbcTemplate;
+
+    public UserDataAccessService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Override
     public int insertUser(UUID id, User user) {
@@ -19,15 +25,18 @@ public class MockUserDataAccessService implements UserDao {
     }
 
     @Override
-    public int addUser(User user) {
-        return UserDao.super.addUser(user);
-    }
-
-    @Override
     public Optional<User> selectUserById(UUID id) {
-        return DB.stream()
-                .filter(user -> user.getId().equals(id))
-                .findFirst();
+        final String sql = "SELECT id, name, email FROM user WHERE id = ?";
+        User user = jdbcTemplate.queryForObject(
+                sql,
+                new Object[]{id},
+                (resultSet, i) -> {
+                    UUID userId = UUID.fromString(resultSet.getString("id"));
+                    String name = resultSet.getString("name");
+                    String email = resultSet.getString("email");
+                    return new User(userId, name, email);
+                });
+        return Optional.ofNullable(user);
     }
 
     @Override
@@ -55,8 +64,17 @@ public class MockUserDataAccessService implements UserDao {
                 .orElse(0);
     }
 
+
     @Override
     public List<User> selectAllUsers() {
-        return DB;
+        final String sql = "SELECT id, name, email FROM user";
+        return jdbcTemplate.query(sql, (resultSet, i) -> {
+            UUID id = UUID.fromString(resultSet.getString("id"));
+            String name = resultSet.getString("name");
+            String email = resultSet.getString("email");
+            return new User(id, name, email);
+        });
     }
+
+
 }
