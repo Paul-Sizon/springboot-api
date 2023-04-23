@@ -1,4 +1,4 @@
-## CryptoAPI
+## SpringAPI
 SpringAPI is a RESTful API for managing users. It allows creating, reading, updating, and deleting user records in a PostgreSQL database.
 
 ### Stack
